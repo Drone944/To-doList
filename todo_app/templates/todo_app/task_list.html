@@ -1,0 +1,62 @@
+{% extends 'todo_app/main.html' %}
+{% block content %}
+
+<div class="header-bar">
+    <div>
+        <h1>Hello, {{request.user|title}}.</h1>
+        <h3 style="margin:0">You have <i>{{count}}</i> incomplete task{{ count|pluralize:"s" }}.</h3>
+    </div>
+
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'logout' %}">Logout</a>
+    {% else %}
+    <a href="{% url 'login' %}">Login</a>
+    {% endif %}
+
+</div>
+
+<div class="task-items-wrapper">
+    {% for task in tasks %}
+        <div class="task-title">
+        </div>
+
+    {% empty %}
+        <h3>No Items in list.</h3>
+    {% endfor %}
+</div>
+
+
+<hr>
+<h1>To-do List</h1>
+<a href="{% url 'task-create' %}"><input type="submit" value="Add Task"></a>
+
+<form method="GET">
+    <input type="text" name='search-area' value="{{search_input}}">
+    <input type="submit" value="Search">
+</form>
+
+<table>
+    <tr>
+        <th>Items</th>
+
+        <th>Due Date</th>
+        <th></th>
+    </tr>
+    {% for task in tasks %}
+    <tr>
+        <td>
+            {% if task.complete %}
+                <i><s><a href="{% url 'task-update' task.id %}">{{task}}</a></s></i>
+            {% else %}
+                <a href="{% url 'task-update' task.id %}">{{task}}</a>
+            {% endif %}
+        </td>
+        <td>{{task.duedate}}</td>
+        <td><a href="{% url 'task-delete' task.id %}">&#215;</a></td>
+    </tr>
+    {% empty %}
+        <h3>No Items in list.</h3>
+    {% endfor %}
+</table>
+
+{% endblock content %}
